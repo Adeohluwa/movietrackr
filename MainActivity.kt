@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.adinoyi.movietracker.ui.screens.latest.LatestMoviesScreen
 import com.adinoyi.movietracker.ui.theme.MovieTrackerTheme
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 // class MainActivity : ComponentActivity() {
 //     override fun onCreate(savedInstanceState: Bundle?) {
