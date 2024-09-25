@@ -16,10 +16,51 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.adinoyi.movietracker.data.models.Movie
 
+// @Composable
+// fun LatestMoviesScreen(viewModel: LatestMoviesViewModel) {
+//     val movies by viewModel.latestMovies.collectAsState()
+    
+//     LazyVerticalGrid(
+//         columns = GridCells.Fixed(2),
+//         contentPadding = PaddingValues(8.dp)
+//     ) {
+//         items(movies) { movie ->
+//             MovieItem(movie)
+//         }
+//     }
+// }
+
+// @Composable
+// fun MovieItem(movie: Movie) {
+//     Card(
+//         modifier = Modifier
+//             .padding(8.dp)
+//             .fillMaxWidth(),
+//         shape = MaterialTheme.shapes.medium
+//     ) {
+//         Column {
+//             AsyncImage(
+//                 model = movie.posterPath,
+//                 contentDescription = movie.title,
+//                 modifier = Modifier
+//                     .fillMaxWidth()
+//                     .height(200.dp),
+//                 contentScale = ContentScale.Crop
+//             )
+//             Text(
+//                 text = movie.title,
+//                 modifier = Modifier.padding(8.dp),
+//                 style = MaterialTheme.typography.bodyMedium
+//             )
+//         }
+//     }
+// }
+
+
 @Composable
 fun LatestMoviesScreen(viewModel: LatestMoviesViewModel) {
     val movies by viewModel.latestMovies.collectAsState()
-    
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(8.dp)
@@ -51,6 +92,11 @@ fun MovieItem(movie: Movie) {
                 text = movie.title,
                 modifier = Modifier.padding(8.dp),
                 style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = movie.year,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                style = MaterialTheme.typography.bodySmall
             )
         }
     }

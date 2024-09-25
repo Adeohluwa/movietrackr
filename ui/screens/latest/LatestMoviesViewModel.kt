@@ -8,20 +8,40 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class LatestMoviesViewModel(private  val repository: MovieRepository) : ViewModel() {
+// class LatestMoviesViewModel(private  val repository: MovieRepository) : ViewModel() {
+//     private val _latestMovies = MutableStateFlow<List<Movie>>(emptyList())
+//     val  latestMovies: StateFlow<List<Movie>> = _latestMovies
+
+//     init {
+//         fetchLatestMovies()
+//     }
+
+//     private  fun fetchLatestMovies() {
+//         viewModelScope.launch {
+//             try {
+//                 _latestMovies.value = repository.getLatestMovies()
+//             } catch (e: Exception) {
+
+//             }
+//         }
+//     }
+// }
+
+
+class LatestMoviesViewModel(private val repository: MovieRepository) : ViewModel() {
     private val _latestMovies = MutableStateFlow<List<Movie>>(emptyList())
-    val  latestMovies: StateFlow<List<Movie>> = _latestMovies
+    val latestMovies: StateFlow<List<Movie>> = _latestMovies
 
     init {
         fetchLatestMovies()
     }
 
-    private  fun fetchLatestMovies() {
+    private fun fetchLatestMovies() {
         viewModelScope.launch {
             try {
                 _latestMovies.value = repository.getLatestMovies()
             } catch (e: Exception) {
-
+                // Handle error
             }
         }
     }
