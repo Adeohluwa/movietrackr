@@ -6,12 +6,12 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.adinoyi.movietracker.data.api.MovieApiService
 import com.adinoyi.movietracker.ui.screens.latest.LatestMoviesScreen
+import com.adinoyi.movietracker.ui.screens.latest.LatestMoviesViewModel
 import com.adinoyi.movietracker.ui.theme.MovieTrackerTheme
+import com.adinoyi.movietracker.data.repositories.MovieRepository
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -64,7 +64,7 @@ class MainActivity : ComponentActivity() {
         val viewModel = LatestMoviesViewModel(movieRepository)
 
         setContent {
-            MoviesDailyTheme {
+            MovieTrackerTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

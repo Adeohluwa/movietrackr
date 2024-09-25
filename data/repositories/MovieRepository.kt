@@ -7,10 +7,10 @@
 // }
 
 
-package com.adinoyi.movietrackr.data.repositories
+package com.adinoyi.movietracker.data.repositories
 
-import com.adinoyi.movietrackr.data.api.MovieApiService
-import com.adinoyi.movietrackr.data.models.Movie
+import com.adinoyi.movietracker.data.api.MovieApiService
+import com.adinoyi.movietracker.data.models.Movie
 
 class MovieRepository(private val apiService: MovieApiService) {
     suspend fun getLatestMovies(searchTerm: String = "2023"): List<Movie> {
