@@ -2,6 +2,8 @@ package com.adinoyi.movietracker.ui.screens.latest
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -60,22 +62,30 @@ import com.adinoyi.movietracker.data.models.Movie
 // }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LatestMoviesScreen(viewModel: LatestMoviesViewModel, onMovieClick: (Movie) -> Unit) {
     var searchQuery by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf("All") }
     val categories = listOf("All", "Action", "Comedy", "Drama", "Sci-Fi")
 
-    Column {
-        SearchBar(
-            searchQuery = searchQuery,
-            onSearchQueryChange = { searchQuery = it },
-            selectedCategory = selectedCategory,
-            onCategorySelected = { selectedCategory = it },
-            categories = categories,
-            onSearch = { viewModel.searchMovies(searchQuery, selectedCategory) }
+    Scaffold(
+        topBar = {
+            SearchBar(
+                searchQuery = searchQuery,
+                onSearchQueryChange = { searchQuery = it },
+                selectedCategory = selectedCategory,
+                onCategorySelected = { selectedCategory = it },
+                categories = categories,
+                onSearch = { viewModel.searchMovies(searchQuery, selectedCategory) }
+            )
+        }
+    ) { paddingValues ->
+        MovieGrid(
+            viewModel = viewModel,
+            onMovieClick = onMovieClick,
+            modifier = Modifier.padding(paddingValues)
         )
-        MovieGrid(viewModel = viewModel, onMovieClick = onMovieClick)
     }
 }
 
@@ -92,6 +102,7 @@ fun SearchBar(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         OutlinedTextField(
             value = searchQuery,
@@ -110,33 +121,14 @@ fun SearchBar(
         
         Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            var expanded by remember { mutableStateOf(false) }
-            
-            OutlinedButton(
-                onClick = { expanded = true },
+            CategoryDropdown(
+                selectedCategory = selectedCategory,
+                onCategorySelected = onCategorySelected,
+                categories = categories,
                 modifier = Modifier.weight(1f)
-            ) {
-                Text(selectedCategory)
-                Icon(Icons.Default.ArrowDropDown, contentDescription = "Select category")
-            }
-            
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = Modifier.width(IntrinsicSize.Min)
-            ) {
-                categories.forEach { category ->
-                    DropdownMenuItem(
-                        text = { Text(category) },
-                        onClick = {
-                            onCategorySelected(category)
-                            expanded = false
-                        }
-                    )
-                }
-            }
+            )
             
             Spacer(modifier = Modifier.width(8.dp))
             
@@ -148,12 +140,53 @@ fun SearchBar(
 }
 
 @Composable
-fun MovieGrid(viewModel: LatestMoviesViewModel, onMovieClick: (Movie) -> Unit) {
+fun CategoryDropdown(
+    selectedCategory: String,
+    onCategorySelected: (String) -> Unit,
+    categories: List<String>,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+    
+    Box(modifier = modifier) {
+        OutlinedButton(
+            onClick = { expanded = true },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(selectedCategory)
+            Icon(Icons.Default.ArrowDropDown, contentDescription = "Select category")
+        }
+        
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            categories.forEach { category ->
+                DropdownMenuItem(
+                    text = { Text(category) },
+                    onClick = {
+                        onCategorySelected(category)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun MovieGrid(
+    viewModel: LatestMoviesViewModel,
+    onMovieClick: (Movie) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val movies by viewModel.latestMovies.collectAsState()
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
-        contentPadding = PaddingValues(8.dp)
+        contentPadding = PaddingValues(8.dp),
+        modifier = modifier.fillMaxSize()
     ) {
         items(movies) { movie ->
             MovieItem(movie = movie, onClick = { onMovieClick(movie) })
