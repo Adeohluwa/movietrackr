@@ -31,6 +31,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.ArrowDropDown
 import coil.compose.AsyncImage
 import com.adinoyi.movietracker.data.models.Movie
 
@@ -94,7 +97,6 @@ fun LatestMoviesScreen(viewModel: LatestMoviesViewModel, onMovieClick: (Movie) -
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(
     searchQuery: String,
@@ -104,45 +106,61 @@ fun SearchBar(
     categories: List<String>,
     onSearch: () -> Unit
 ) {
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(16.dp)
     ) {
         OutlinedTextField(
             value = searchQuery,
             onValueChange = onSearchQueryChange,
-            modifier = Modifier.weight(1f),
-            placeholder = { Text("Search to find your movie...") }
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text("Search to find your movie...") },
+            trailingIcon = {
+                IconButton(onClick = onSearch) {
+                    Icon(Icons.Default.Search, contentDescription = "Search")
+                }
+            },
+            singleLine = true
         )
-        Spacer(modifier = Modifier.width(8.dp))
-        ExposedDropdownMenuBox(
-            expanded = false,
-            onExpandedChange = {}
+        
+        Spacer(modifier = Modifier.height(8.dp))
+        
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            OutlinedTextField(
-                value = selectedCategory,
-                onValueChange = {},
-                readOnly = true,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = false) },
-                modifier = Modifier.menuAnchor()
-            )
-            ExposedDropdownMenu(
-                expanded = false,
-                onDismissRequest = {}
+            var expanded by remember { mutableStateOf(false) }
+            
+            OutlinedButton(
+                onClick = { expanded = true },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(selectedCategory)
+                Icon(Icons.Default.ArrowDropDown, contentDescription = "Select category")
+            }
+            
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.width(IntrinsicSize.Min)
             ) {
                 categories.forEach { category ->
                     DropdownMenuItem(
                         text = { Text(category) },
-                        onClick = { onCategorySelected(category) }
+                        onClick = {
+                            onCategorySelected(category)
+                            expanded = false
+                        }
                     )
                 }
             }
-        }
-        Spacer(modifier = Modifier.width(8.dp))
-        Button(onClick = onSearch) {
-            Text("Search")
+            
+            Spacer(modifier = Modifier.width(8.dp))
+            
+            Button(onClick = onSearch) {
+                Text("Search")
+            }
         }
     }
 }
