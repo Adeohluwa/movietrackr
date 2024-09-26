@@ -32,17 +32,40 @@ class LatestMoviesViewModel(private val repository: MovieRepository) : ViewModel
     private val _latestMovies = MutableStateFlow<List<Movie>>(emptyList())
     val latestMovies: StateFlow<List<Movie>> = _latestMovies
 
+    private val _favorites = MutableStateFlow<Set<String>>(emptySet())
+    val favorites: StateFlow<Set<String>> = _favorites
+
     init {
         fetchLatestMovies()
+        loadFavorites()
     }
 
-    private fun fetchLatestMovies() {
+    fun searchMovies(query: String, category: String) {
         viewModelScope.launch {
             try {
-                _latestMovies.value = repository.getLatestMovies()
+                _latestMovies.value = repository.searchMovies(query, category)
             } catch (e: Exception) {
                 // Handle error
             }
+        }
+    }
+
+    fun toggleFavorite(movieId: String) {
+        viewModelScope.launch {
+            val currentFavorites = _favorites.value.toMutableSet()
+            if (currentFavorites.contains(movieId)) {
+                currentFavorites.remove(movieId)
+            } else {
+                currentFavorites.add(movieId)
+            }
+            _favorites.value = currentFavorites
+            repository.saveFavorites(currentFavorites)
+        }
+    }
+
+    private fun loadFavorites() {
+        viewModelScope.launch {
+            _favorites.value = repository.loadFavorites()
         }
     }
 }

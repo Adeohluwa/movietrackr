@@ -4,12 +4,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -58,7 +55,78 @@ import com.adinoyi.movietracker.data.models.Movie
 
 
 @Composable
-fun LatestMoviesScreen(viewModel: LatestMoviesViewModel) {
+fun LatestMoviesScreen(viewModel: LatestMoviesViewModel, onMovieClick: (Movie) -> Unit) {
+    var searchQuery by remember { mutableStateOf("") }
+    var selectedCategory by remember { mutableStateOf("All") }
+    val categories = listOf("All", "Action", "Comedy", "Drama", "Sci-Fi")
+
+    Column {
+        SearchBar(
+            searchQuery = searchQuery,
+            onSearchQueryChange = { searchQuery = it },
+            selectedCategory = selectedCategory,
+            onCategorySelected = { selectedCategory = it },
+            categories = categories,
+            onSearch = { viewModel.searchMovies(searchQuery, selectedCategory) }
+        )
+        MovieGrid(viewModel = viewModel, onMovieClick = onMovieClick)
+    }
+}
+
+@Composable
+fun SearchBar(
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    selectedCategory: String,
+    onCategorySelected: (String) -> Unit,
+    categories: List<String>,
+    onSearch: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        OutlinedTextField(
+            value = searchQuery,
+            onValueChange = onSearchQueryChange,
+            modifier = Modifier.weight(1f),
+            placeholder = { Text("Search to find your movie...") }
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        ExposedDropdownMenuBox(
+            expanded = false,
+            onExpandedChange = {}
+        ) {
+            OutlinedTextField(
+                value = selectedCategory,
+                onValueChange = {},
+                readOnly = true,
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = false) },
+                modifier = Modifier.menuAnchor()
+            )
+            ExposedDropdownMenu(
+                expanded = false,
+                onDismissRequest = {}
+            ) {
+                categories.forEach { category ->
+                    DropdownMenuItem(
+                        text = { Text(category) },
+                        onClick = { onCategorySelected(category) }
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.width(8.dp))
+        Button(onClick = onSearch) {
+            Text("Search")
+        }
+    }
+}
+
+@Composable
+fun MovieGrid(viewModel: LatestMoviesViewModel, onMovieClick: (Movie) -> Unit) {
     val movies by viewModel.latestMovies.collectAsState()
 
     LazyVerticalGrid(
@@ -66,7 +134,7 @@ fun LatestMoviesScreen(viewModel: LatestMoviesViewModel) {
         contentPadding = PaddingValues(8.dp)
     ) {
         items(movies) { movie ->
-            MovieItem(movie)
+            MovieItem(movie = movie, onClick = { onMovieClick(movie) })
         }
     }
 }
