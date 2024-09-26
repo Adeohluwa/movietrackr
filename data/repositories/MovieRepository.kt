@@ -24,8 +24,8 @@ class MovieRepository(
         return response.movies
     }
 
-    suspend fun searchMovies(query: String, category: String = ""): List<Movie> {
-        val response = apiService.searchMovies(query)
+    suspend fun searchMovies(query: String, category: String): List<Movie> {
+        val response = apiService.searchMovies(query, category)
         return response.movies
     }
 

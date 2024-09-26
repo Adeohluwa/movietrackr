@@ -28,6 +28,8 @@ import kotlinx.coroutines.launch
 // }
 
 
+
+
 class LatestMoviesViewModel(private val repository: MovieRepository) : ViewModel() {
     private val _latestMovies = MutableStateFlow<List<Movie>>(emptyList())
     val latestMovies: StateFlow<List<Movie>> = _latestMovies
@@ -46,6 +48,7 @@ class LatestMoviesViewModel(private val repository: MovieRepository) : ViewModel
                 _latestMovies.value = repository.searchMovies(query, category)
             } catch (e: Exception) {
                 // Handle error
+                println(e);
             }
         }
     }
@@ -66,6 +69,17 @@ class LatestMoviesViewModel(private val repository: MovieRepository) : ViewModel
     private fun loadFavorites() {
         viewModelScope.launch {
             _favorites.value = repository.loadFavorites()
+        }
+    }
+
+
+    private  fun fetchLatestMovies() {
+        viewModelScope.launch {
+            try {
+                _latestMovies.value = repository.getLatestMovies()
+            } catch (e: Exception) {
+                print(e)
+            }
         }
     }
 }
