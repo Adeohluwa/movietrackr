@@ -1,5 +1,6 @@
 package com.adinoyi.movietracker
 
+import MovieDetailScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,8 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.adinoyi.movietracker.data.api.MovieApiService
-import com.adinoyi.moviestrackr.data.models.Movie
-import com.adinoyi.moviestrackr.data.repositories.MovieRepository
+import com.adinoyi.movietracker.data.repositories.MovieRepository
 import com.adinoyi.movietracker.ui.screens.latest.LatestMoviesScreen
 import com.adinoyi.movietracker.ui.screens.latest.LatestMoviesViewModel
 import com.adinoyi.movietracker.ui.theme.MovieTrackerTheme
@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
         val viewModel = LatestMoviesViewModel(movieRepository)
 
         setContent {
-            MoviesDailyTheme {
+            MovieTrackerTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
