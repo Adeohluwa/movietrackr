@@ -36,7 +36,7 @@ class LatestMoviesViewModel(private val repository: MovieRepository) : ViewModel
     val favorites: StateFlow<Set<String>> = _favorites
 
     init {
-        //fetchLatestMovies()
+        fetchLatestMovies()
         loadFavorites()
     }
 

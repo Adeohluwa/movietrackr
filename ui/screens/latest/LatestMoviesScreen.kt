@@ -68,11 +68,6 @@ fun LatestMoviesScreen(viewModel: LatestMoviesViewModel, onMovieClick: (Movie) -
     var searchQuery by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf("All") }
     val categories = listOf("All", "Action", "Comedy", "Drama", "Sci-Fi")
-    val movies by viewModel.latestMovies.collectAsState()
-
-    LaunchedEffect(Unit) {
-        viewModel.fetchLatestMovies() // Ensure initial data is loaded
-    }
 
     Scaffold(
         topBar = {
@@ -86,16 +81,17 @@ fun LatestMoviesScreen(viewModel: LatestMoviesViewModel, onMovieClick: (Movie) -
             )
         }
     ) { paddingValues ->
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            contentPadding = PaddingValues(8.dp),
+        // Ensure the MovieGrid is given enough space and padding
+        Box(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(paddingValues)
+                .fillMaxSize()
         ) {
-            items(movies) { movie ->
-                MovieItem(movie = movie, onClick = { onMovieClick(movie) })
-            }
+            MovieGrid(
+                viewModel = viewModel,
+                onMovieClick = onMovieClick,
+                modifier = Modifier.fillMaxSize()
+            )
         }
     }
 }
@@ -113,6 +109,7 @@ fun SearchBar(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         OutlinedTextField(
             value = searchQuery,
@@ -133,36 +130,73 @@ fun SearchBar(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            ExposedDropdownMenuBox(
-                expanded = false,
-                onExpandedChange = {},
+            CategoryDropdown(
+                selectedCategory = selectedCategory,
+                onCategorySelected = onCategorySelected,
+                categories = categories,
                 modifier = Modifier.weight(1f)
-            ) {
-                OutlinedTextField(
-                    value = selectedCategory,
-                    onValueChange = {},
-                    readOnly = true,
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = false) },
-                    modifier = Modifier.menuAnchor()
-                )
-                ExposedDropdownMenu(
-                    expanded = false,
-                    onDismissRequest = {}
-                ) {
-                    categories.forEach { category ->
-                        DropdownMenuItem(
-                            text = { Text(category) },
-                            onClick = { onCategorySelected(category) }
-                        )
-                    }
-                }
-            }
+            )
             
             Spacer(modifier = Modifier.width(8.dp))
             
             Button(onClick = onSearch) {
                 Text("Search")
             }
+        }
+    }
+}
+
+@Composable
+fun CategoryDropdown(
+    selectedCategory: String,
+    onCategorySelected: (String) -> Unit,
+    categories: List<String>,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+    
+    Box(modifier = modifier) {
+        OutlinedButton(
+            onClick = { expanded = true },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(selectedCategory)
+            Icon(Icons.Default.ArrowDropDown, contentDescription = "Select category")
+        }
+        
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            categories.forEach { category ->
+                DropdownMenuItem(
+                    text = { Text(category) },
+                    onClick = {
+                        onCategorySelected(category)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun MovieGrid(
+    viewModel: LatestMoviesViewModel,
+    onMovieClick: (Movie) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val movies by viewModel.latestMovies.collectAsState()
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        contentPadding = PaddingValues(8.dp),
+        modifier = modifier.fillMaxSize()
+    ) {
+        items(movies) { movie ->
+            MovieItem(movie = movie, onClick = { onMovieClick(movie) })
         }
     }
 }
