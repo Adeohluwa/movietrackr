@@ -81,11 +81,18 @@ fun LatestMoviesScreen(viewModel: LatestMoviesViewModel, onMovieClick: (Movie) -
             )
         }
     ) { paddingValues ->
-        MovieGrid(
-            viewModel = viewModel,
-            onMovieClick = onMovieClick,
-            modifier = Modifier.padding(paddingValues)
-        )
+        // Ensure the MovieGrid is given enough space and padding
+        Box(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+        ) {
+            MovieGrid(
+                viewModel = viewModel,
+                onMovieClick = onMovieClick,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
     }
 }
 
@@ -193,7 +200,6 @@ fun MovieGrid(
         }
     }
 }
-
 
 @Composable
 fun MovieItem(movie: Movie, onClick: () -> Unit) {
