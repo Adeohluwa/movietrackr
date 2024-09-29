@@ -63,6 +63,18 @@ class LatestMoviesViewModel(private val repository: MovieRepository) : ViewModel
         }
     }
 
+
+    private  fun fetchLatestMovies() {
+        viewModelScope.launch {
+            try {
+                _latestMovies.value = repository.getLatestMovies()
+            } catch (e: Exception) {
+
+            }
+        }
+    }
+
+
     private fun loadFavorites() {
         viewModelScope.launch {
             _favorites.value = repository.loadFavorites()
