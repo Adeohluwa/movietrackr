@@ -23,11 +23,7 @@ class MovieRepository(
     suspend fun getMovieDetails(imdbID: String): Result<Movie> {
         return try {
             val movie = apiService.getMovieDetails(imdbID)
-            if (movie != null) {
-                Result.success(movie)
-            } else {
-                Result.failure(NullPointerException("Movie details are null for IMDb ID: $imdbID"))
-            }
+            Result.success(movie)
         } catch (e: HttpException) {
             Result.failure(e)
         } catch (e: IOException) {

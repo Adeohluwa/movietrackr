@@ -17,5 +17,5 @@ interface MovieApiService {
     suspend fun getMovieDetails(
         @Query("i") imdbID: String,
         @Query("apikey") apiKey: String = "8be2805b"
-    ): Movie
+    ): Movie?
 }
