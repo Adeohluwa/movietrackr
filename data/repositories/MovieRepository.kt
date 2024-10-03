@@ -13,6 +13,9 @@ import android.content.Context
 import com.adinoyi.movietracker.data.api.MovieApiService
 import com.adinoyi.movietracker.data.models.Movie
 import com.adinoyi.movietracker.data.models.MovieDetails
+import retrofit2.HttpException
+import java.io.IOException
+import timber.log.Timber
 
 
 
