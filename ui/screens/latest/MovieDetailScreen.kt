@@ -51,6 +51,12 @@ fun MovieDetailScreen(
             Text(text = "Year: ${movie.year}", style = MaterialTheme.typography.bodyLarge)
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "Type: ${movie.type}", style = MaterialTheme.typography.bodyLarge)
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = "Year: ${movie.plot}", style = MaterialTheme.typography.bodyLarge)
+            // Spacer(modifier = Modifier.height(16.dp))
+            // Text(text = "Year: ${movie.year}", style = MaterialTheme.typography.bodyLarge)
+            // Spacer(modifier = Modifier.height(16.dp))
+            // Text(text = "Year: ${movie.year}", style = MaterialTheme.typography.bodyLarge)
             // Add more details as needed
         }
     }
