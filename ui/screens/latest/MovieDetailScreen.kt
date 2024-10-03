@@ -12,24 +12,30 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.adinoyi.movietracker.data.models.Movie
 
+// Opt-in to use experimental Material3 API features
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovieDetailScreen(
-    movie: Movie,
-    isFavorite: Boolean,
-    onToggleFavorite: () -> Unit,
-    onBackPressed: () -> Unit
+    movie: Movie, // The movie object containing details to display
+    isFavorite: Boolean, // Boolean indicating if the movie is a favorite
+    onToggleFavorite: () -> Unit, // Function to toggle the favorite status
+    onBackPressed: () -> Unit // Function to handle the back button press
 ) {
+    // Column layout to arrange child components vertically
     Column(modifier = Modifier.fillMaxSize()) {
+        // TopAppBar to display the movie title and navigation icons
         TopAppBar(
-            title = { Text(movie.title) },
+            title = { Text(movie.title) }, // Display the movie title
             navigationIcon = {
+                // IconButton to handle the back button press
                 IconButton(onClick = onBackPressed) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Back") // Back arrow icon
                 }
             },
             actions = {
+                // IconButton to handle the favorite toggle
                 IconButton(onClick = onToggleFavorite) {
+                    // Display the favorite icon based on the isFavorite boolean
                     Icon(
                         if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                         contentDescription = "Favorite"
@@ -38,18 +44,24 @@ fun MovieDetailScreen(
             }
         )
         
+        // Column layout to display movie details with padding
         Column(modifier = Modifier.padding(16.dp)) {
+            // AsyncImage to load and display the movie poster
             AsyncImage(
-                model = movie.posterPath,
-                contentDescription = movie.title,
+                model = movie.posterPath, // URL of the movie poster
+                contentDescription = movie.title, // Description for accessibility
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp),
-                contentScale = ContentScale.Fit
+                    .fillMaxWidth() // Make the image fill the width of the screen
+                    .height(300.dp), // Set the height of the image
+                contentScale = ContentScale.Fit // Scale the image to fit within the bounds
             )
+            // Spacer to add vertical space between components
             Spacer(modifier = Modifier.height(16.dp))
+            // Text to display the movie's release year
             Text(text = "Year: ${movie.year}", style = MaterialTheme.typography.bodyLarge)
+            // Spacer to add vertical space between components
             Spacer(modifier = Modifier.height(8.dp))
+            // Text to display the movie type (e.g., movie, series)
             Text(text = "Type: ${movie.type}", style = MaterialTheme.typography.bodyLarge)
             // Add more details as needed
         }
