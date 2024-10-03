@@ -16,7 +16,7 @@ import com.adinoyi.movietracker.data.models.MovieDetails
 import com.adinoyi.movietracker.data.models.SearchResponse
 import retrofit2.HttpException
 import java.io.IOException
-import android.util.Log
+
 
 
 
@@ -36,23 +36,11 @@ class MovieRepository(
 
 
     suspend fun getMovieDetails(imdbID: String): MovieDetails? {
-        return try {
-            val movieDetails = apiService.getMovieDetails(imdbID)
-            if (movieDetails.Response == "True") {
-                movieDetails
-            } else {
-                Log.e("Movie details response is false for IMDb ID: $imdbID")
-                null
+        val movieDetails = apiService.getMovieDetails(imdbID)
+        if (movieDetails.Response == "True") {
+            return movieDetails
             }
-        } catch (e: HttpException) {
-            Log.e(e, "HTTP error while fetching movie details for IMDb ID: $imdbID")
-            null
-        } catch (e: IOException) {
-            Log.e(e, "IO error while fetching movie details for IMDb ID: $imdbID")
-            null
-        } catch (e: Exception) {
-            Log.e(e, "Unexpected error while fetching movie details for IMDb ID: $imdbID")
-            null
+        return movieDetails 
         }
     }
 

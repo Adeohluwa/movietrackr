@@ -36,7 +36,7 @@ data class MovieDetails(
     @SerializedName("BoxOffice") val boxOffice: String,
     @SerializedName("Production") val production: String,
     @SerializedName("Website") val website: String,
-    @SerializedName("Response") val response: String
+    @SerializedName("Response") val Response: String
 )
 
 data class Rating(

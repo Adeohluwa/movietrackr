@@ -2,6 +2,8 @@ package com.adinoyi.movietracker.ui.screens.latest
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.adinoyi.movietracker.data.models.Movie
 import com.adinoyi.movietracker.data.models.MovieDetails
 import com.adinoyi.movietracker.data.repositories.MovieRepository
