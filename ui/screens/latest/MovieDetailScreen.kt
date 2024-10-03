@@ -11,6 +11,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.adinoyi.movietracker.data.models.Movie
+import com.adinoyi.movietracker.data.models.MovieDetails
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -18,8 +19,19 @@ fun MovieDetailScreen(
     movie: Movie,
     isFavorite: Boolean,
     onToggleFavorite: () -> Unit,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
+    viewModel: MovieDetailViewModel
 ) {
+    val movieDetails by viewModel.movieDetails.observeAsState()
+    val errorMessage by viewModel.errorMessage.observeAsState()
+
+    // Fetch movie details when the screen is first composed
+    LaunchedEffect(movie.imdbID) {
+    viewModel.fetchMovieDetails(movie.imdbID)
+    } 
+
+
+{
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
             title = { Text(movie.title) },
@@ -38,26 +50,41 @@ fun MovieDetailScreen(
             }
         )
         
-        Column(modifier = Modifier.padding(16.dp)) {
-            AsyncImage(
-                model = movie.posterPath,
-                contentDescription = movie.title,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp),
-                contentScale = ContentScale.Fit
+        if (errorMessage != null) {
+            Text(
+                text = errorMessage!!,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(16.dp)
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "Year: ${movie.year}", style = MaterialTheme.typography.bodyLarge)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "Type: ${movie.type}", style = MaterialTheme.typography.bodyLarge)
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "Year: ${movie.plot}", style = MaterialTheme.typography.bodyLarge)
-            // Spacer(modifier = Modifier.height(16.dp))
-            // Text(text = "Year: ${movie.year}", style = MaterialTheme.typography.bodyLarge)
-            // Spacer(modifier = Modifier.height(16.dp))
-            // Text(text = "Year: ${movie.year}", style = MaterialTheme.typography.bodyLarge)
-            // Add more details as needed
+        } else {
+            movieDetails?.let { details ->
+                Column(modifier = Modifier.padding(16.dp)) {
+                    AsyncImage(
+                        model = details.Poster,
+                        contentDescription = details.Title,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(text = "Year: ${details.Year}", style = MaterialTheme.typography.bodyLarge)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = "Rated: ${details.Rated}", style = MaterialTheme.typography.bodyLarge)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = "Released: ${details.Released}", style = MaterialTheme.typography.bodyLarge)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = "Runtime: ${details.Runtime}", style = MaterialTheme.typography.bodyLarge)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = "Genre: ${details.Genre}", style = MaterialTheme.typography.bodyLarge)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = "Director: ${details.Director}", style = MaterialTheme.typography.bodyLarge)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = "Writer: ${details.Writer}", style = MaterialTheme.typography.bodyLarge)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = "Actors: ${details.Actors}", style = MaterialTheme.typography.bodyLarge)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = "Plot: ${details.Plot}", style = MaterialTheme.typography.bodyLarge)
         }
     }
 }

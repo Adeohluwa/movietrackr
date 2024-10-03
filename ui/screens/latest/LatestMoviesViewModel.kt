@@ -3,6 +3,7 @@ package com.adinoyi.movietracker.ui.screens.latest
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.adinoyi.movietracker.data.models.Movie
+import com.adinoyi.movietracker.data.models.MovieDetails
 import com.adinoyi.movietracker.data.repositories.MovieRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,6 +39,7 @@ class LatestMoviesViewModel(private val repository: MovieRepository) : ViewModel
     init {
         fetchLatestMovies()
         loadFavorites()
+        fetchMovieDetails()
     }
 
     fun searchMovies(query: String, category: String) {
@@ -49,6 +51,19 @@ class LatestMoviesViewModel(private val repository: MovieRepository) : ViewModel
             }
         }
     }
+
+
+    private fun fetchMovieDetails(imdbID: String) {
+        viewModelScope.launch {
+            val details = movieRepository.getMovieDetails(imdbID)
+            if (details != null) {
+                _movieDetails.value = details
+            } else {
+                _errorMessage.value = "Failed to fetch movie details"
+            }
+        }
+    }
+
 
     fun toggleFavorite(movieId: String) {
         viewModelScope.launch {

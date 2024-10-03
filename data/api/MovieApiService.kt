@@ -20,4 +20,10 @@ interface MovieApiService {
         @Query("type") type: String = "movie",
         @Query("apikey") apiKey: String = "8be2805b"
     ): SearchResponse
+
+    @GET("/")
+    suspend fun getMovieDetails(
+        @Query("i") imdbID: String,
+        @Query("apikey") apiKey: String = "8be2805b"
+    ): MovieDetails
 }

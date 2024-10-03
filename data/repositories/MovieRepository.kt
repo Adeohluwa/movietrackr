@@ -1,12 +1,20 @@
+// package com.adinoyi.movietracker.data.repositories
+
+// import com.adinoyi.movietracker.data.api.MovieApiService
+
+// class MovieRepository(private val apiService: MovieApiService) {
+//     suspend fun getLatestMovies() = apiService.getLatestMovies();
+// }
+
+
 package com.adinoyi.movietracker.data.repositories
 
 import android.content.Context
 import com.adinoyi.movietracker.data.api.MovieApiService
 import com.adinoyi.movietracker.data.models.Movie
 import com.adinoyi.movietracker.data.models.MovieDetails
-import com.adinoyi.movietracker.data.models.SearchResult
-import retrofit2.HttpException
-import java.io.IOException
+
+
 
 class MovieRepository(
     private val apiService: MovieApiService,
@@ -14,30 +22,38 @@ class MovieRepository(
 ) {
     suspend fun getLatestMovies(searchTerm: String = "2023"): List<Movie> {
         val response = apiService.searchMovies(searchTerm)
-        return response.Search
+        return response.movies
     }
 
     suspend fun searchMovies(query: String, category: String = ""): List<Movie> {
         val response = apiService.searchMovies(query)
-        return response.Search
+        return response.movies
     }
 
-    suspend fun getMovieDetails(imdbID: String): Result<MovieDetails> {
+
+    suspend fun getMovieDetails(imdbID: String): MovieDetails? {
         return try {
             val movieDetails = apiService.getMovieDetails(imdbID)
             if (movieDetails.Response == "True") {
-                Result.success(movieDetails)
+                movieDetails
             } else {
-                Result.failure(NullPointerException("Movie details are null or response is false for IMDb ID: $imdbID"))
+                Timber.e("Movie details response is false for IMDb ID: $imdbID")
+                null
             }
         } catch (e: HttpException) {
-            Result.failure(e)
+            Timber.e(e, "HTTP error while fetching movie details for IMDb ID: $imdbID")
+            null
         } catch (e: IOException) {
-            Result.failure(e)
+            Timber.e(e, "IO error while fetching movie details for IMDb ID: $imdbID")
+            null
         } catch (e: Exception) {
-            Result.failure(e)
+            Timber.e(e, "Unexpected error while fetching movie details for IMDb ID: $imdbID")
+            null
         }
     }
+
+
+
 
     suspend fun saveFavorites(favorites: Set<String>) {
         context.getSharedPreferences("favorites", Context.MODE_PRIVATE)
