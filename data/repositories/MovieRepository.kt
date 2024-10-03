@@ -15,7 +15,7 @@ import com.adinoyi.movietracker.data.models.Movie
 import com.adinoyi.movietracker.data.models.MovieDetails
 import retrofit2.HttpException
 import java.io.IOException
-import timber.log.Timber
+import android.util.Log
 
 
 
@@ -40,17 +40,17 @@ class MovieRepository(
             if (movieDetails.Response == "True") {
                 movieDetails
             } else {
-                Timber.e("Movie details response is false for IMDb ID: $imdbID")
+                Log.e("Movie details response is false for IMDb ID: $imdbID")
                 null
             }
         } catch (e: HttpException) {
-            Timber.e(e, "HTTP error while fetching movie details for IMDb ID: $imdbID")
+            Log.e(e, "HTTP error while fetching movie details for IMDb ID: $imdbID")
             null
         } catch (e: IOException) {
-            Timber.e(e, "IO error while fetching movie details for IMDb ID: $imdbID")
+            Log.e(e, "IO error while fetching movie details for IMDb ID: $imdbID")
             null
         } catch (e: Exception) {
-            Timber.e(e, "Unexpected error while fetching movie details for IMDb ID: $imdbID")
+            Log.e(e, "Unexpected error while fetching movie details for IMDb ID: $imdbID")
             null
         }
     }
