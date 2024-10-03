@@ -10,6 +10,7 @@ package com.adinoyi.movietracker.data.api
 
 
 import com.adinoyi.movietracker.data.models.SearchResponse
+import com.adinoyi.movietracker.data.models.MovieDetails
 import retrofit2.http.GET
 import retrofit2.http.Query
 
