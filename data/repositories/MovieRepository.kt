@@ -1,19 +1,10 @@
-// package com.adinoyi.movietracker.data.repositories
-
-// import com.adinoyi.movietracker.data.api.MovieApiService
-
-// class MovieRepository(private val apiService: MovieApiService) {
-//     suspend fun getLatestMovies() = apiService.getLatestMovies();
-// }
-
-
 package com.adinoyi.movietracker.data.repositories
 
 import android.content.Context
 import com.adinoyi.movietracker.data.api.MovieApiService
 import com.adinoyi.movietracker.data.models.Movie
-
-
+import retrofit2.HttpException
+import java.io.IOException
 
 class MovieRepository(
     private val apiService: MovieApiService,
@@ -27,6 +18,23 @@ class MovieRepository(
     suspend fun searchMovies(query: String, category: String = ""): List<Movie> {
         val response = apiService.searchMovies(query)
         return response.movies
+    }
+
+    suspend fun getMovieDetails(imdbID: String): Result<Movie> {
+        return try {
+            val movie = apiService.getMovieDetails(imdbID)
+            if (movie != null) {
+                Result.success(movie)
+            } else {
+                Result.failure(NullPointerException("Movie details are null for IMDb ID: $imdbID"))
+            }
+        } catch (e: HttpException) {
+            Result.failure(e)
+        } catch (e: IOException) {
+            Result.failure(e)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     suspend fun saveFavorites(favorites: Set<String>) {
