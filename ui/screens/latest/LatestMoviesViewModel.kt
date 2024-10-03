@@ -41,7 +41,7 @@ class LatestMoviesViewModel(private val repository: MovieRepository) : ViewModel
     init {
         fetchLatestMovies()
         loadFavorites()
-        fetchMovieDetails()
+        // fetchMovieDetails()
     }
 
     fun searchMovies(query: String, category: String) {
